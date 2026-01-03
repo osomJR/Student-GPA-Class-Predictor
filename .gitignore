@@ -1,0 +1,12 @@
+# Virtual environment
+.venv/
+#python cache
+_ _pycache_ _/
+*.pyc
+# Environmental variables
+.env
+#Data
+data/raw/
+#OS junk
+.DS_Store
+Thumb.db
