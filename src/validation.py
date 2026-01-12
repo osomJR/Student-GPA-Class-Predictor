@@ -11,7 +11,7 @@ This module enforces:
 """
 
 from typing import Dict
-from schema import (
+from .schema import (
     STRUCTURAL_CONTRACTS,
     FEATURE_ORDER,
     ATTENDANCE_THRESHOLD,
