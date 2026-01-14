@@ -48,36 +48,12 @@ INPUT_FEATURES = {
 # GPA class boundaries and label encoding
 
 GPA_CLASS_BOUNDARY = {
-    0: {
-        "name": "First Class",
-        "min_gpa": 4.50,
-        "max_gpa": 5.00,
-    },
-    1: {
-        "name": "Second Class Upper",
-        "min_gpa": 3.50,
-        "max_gpa": 4.49,
-    },
-    2: {
-        "name": "Second Class Lower",
-        "min_gpa": 2.50,
-        "max_gpa": 3.49,
-    },
-    3: {
-        "name": "Third Class",
-        "min_gpa": 2.00,
-        "max_gpa": 2.49,
-    },
-    4: {
-        "name": "Pass",
-        "min_gpa": 1.50,
-        "max_gpa": 1.99,
-    },
-    5: {
-        "name": "Fail",
-        "min_gpa": 0.00,
-        "max_gpa": 1.49,
-    }
+    0: {"name": "First Class", "min_gpa": 4.50, "max_gpa": 5.00},
+    1: {"name": "Second Class Upper", "min_gpa": 3.50, "max_gpa": 4.4999},
+    2: {"name": "Second Class Lower", "min_gpa": 2.50, "max_gpa": 3.4999},
+    3: {"name": "Third Class", "min_gpa": 2.00, "max_gpa": 2.4999},
+    4: {"name": "Pass", "min_gpa": 1.50, "max_gpa": 1.9999},
+    5: {"name": "Fail", "min_gpa": 0.00, "max_gpa": 1.4999},
 }
 
 # Confidence and attendance thresholds

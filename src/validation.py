@@ -18,9 +18,8 @@ from .schema import (
 )
 
 
-# ==================================================
+
 # Public Validation Function
-# ==================================================
 
 def validate_input(features: Dict[str, float]) -> Dict[str, float]:
     """
@@ -45,9 +44,9 @@ def validate_input(features: Dict[str, float]) -> Dict[str, float]:
     return features
 
 
-# ==================================================
+
 # Feature Presence Validation
-# ==================================================
+
 
 def _validate_required_features(features: Dict[str, float]) -> None:
     missing_features = [
@@ -74,9 +73,9 @@ def _validate_no_extra_features(features: Dict[str, float]) -> None:
         )
 
 
-# ==================================================
+
 # Feature Order Validation
-# ==================================================
+
 
 def _validate_feature_order(features: Dict[str, float]) -> None:
     if list(features.keys()) != FEATURE_ORDER:
@@ -86,9 +85,9 @@ def _validate_feature_order(features: Dict[str, float]) -> None:
         )
 
 
-# ==================================================
+
 # Data Type Validation
-# ==================================================
+
 
 def _validate_types(features: Dict[str, float]) -> None:
     for feature_name, value in features.items():
@@ -102,9 +101,9 @@ def _validate_types(features: Dict[str, float]) -> None:
                 )
 
 
-# ==================================================
+
 # Range Validation
-# ==================================================
+
 
 def _validate_ranges(features: Dict[str, float]) -> None:
     for feature_name, value in features.items():
@@ -126,9 +125,9 @@ def _validate_ranges(features: Dict[str, float]) -> None:
             )
 
 
-# ==================================================
+
 # Attendance Business Rule
-# ==================================================
+
 
 def _validate_attendance_threshold(features: Dict[str, float]) -> None:
     attendance_percentage = features.get(

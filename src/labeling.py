@@ -5,7 +5,7 @@ Converts validated student features into GPA class labels based on schema.
 """
 
 from typing import Dict, Tuple
-from schema import GPA_CLASS_BOUNDARY
+from .schema import GPA_CLASS_BOUNDARY
 
 
 def assign_gpa_class(predicted_gpa: float) -> Tuple[int, str]:
@@ -13,7 +13,7 @@ def assign_gpa_class(predicted_gpa: float) -> Tuple[int, str]:
     Assigns a GPA class based on predicted GPA value.
 
     Args:
-        predicted_gpa (float): GPA value (0.0–5.0)
+        predicted_gpa (float): GPA value (0.0-5.0)
 
     Returns:
         Tuple[int, str]: (class_index, class_name)
