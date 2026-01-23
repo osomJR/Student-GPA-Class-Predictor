@@ -1,67 +1,126 @@
 """
 Dataset utilities for the Student GPA Class Predictor.
 
-- Loads raw student data
-- Cleans column names
-- Validates features
-- Preprocesses features
-- Splits into train/validation sets
+This module:
+- builds a dataset from a raw DataFrame
+- applies structural contracts
+- applies business rules
+- converts GPA to class labels
+- splits into train/validation sets
 """
 
 from typing import Tuple
 import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-from .validation import validate_input
-from .preprocessing import preprocess_input
-from .labeling import label_student
+from .schema import (
+    FEATURE_ORDER,
+    STRUCTURAL_CONTRACTS,
+    GPA_CLASS_BOUNDARY,
+    TARGET_COLUMN,
+)
+from .business_rules import check_business_rules
 
-def build_dataset(raw_df: pd.DataFrame, test_size: float = 0.2, random_state: int = 42
-                 ) -> Tuple[list, list, list, list]:
+
+def _gpa_to_class_label(gpa_scaled: float) -> int:
     """
-    Builds dataset ready for model training and evaluation.
+    Convert GPA (scaled 0-100) to class label (0-5).
+    """
+    gpa = gpa_scaled / 20.0  # Convert 0–100 scale to 0–5 scale
+
+    for label, boundary in GPA_CLASS_BOUNDARY.items():
+        if boundary["min_gpa"] <= gpa <= boundary["max_gpa"]:
+            return label
+
+    raise ValueError(f"Invalid GPA value: {gpa_scaled}")
+
+
+def build_dataset(
+    raw_df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    """
+    Build training dataset from raw DataFrame.
 
     Args:
-        raw_df (pd.DataFrame): Raw student data
-        test_size (float): Fraction of data for validation
-        random_state (int): Random seed
+        raw_df (pd.DataFrame): Raw dataset containing input features and target column.
 
     Returns:
-        Tuple: X_train, X_val, y_train, y_val (all as lists of preprocessed features)
+        X_train, X_val, y_train, y_val
     """
 
-    # 1. Strip column whitespace
+    # Work on a copy to avoid side effects
+    raw_df = raw_df.copy()
+
+    
+    # 1. Clean column names (CRITICAL FIX)
+    
     raw_df.columns = raw_df.columns.str.strip()
 
-    # 2. Rename student column if needed
-    if 'Student' in raw_df.columns:
-        raw_df = raw_df.rename(columns={'Student': 'student_id'})
+    
+    # 2. Validate required columns exist
+    
+    missing_columns = set(FEATURE_ORDER) - set(raw_df.columns)
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {missing_columns}")
 
-    X = []
-    y = []
+    # Keep only required columns
+    raw_df = raw_df[FEATURE_ORDER]
 
-    # 3. Loop through each row for validation, preprocessing, and labeling
+    
+    # 3. Structural contract validation
+    
+    for feature_name, contract in STRUCTURAL_CONTRACTS.items():
+        min_val = contract["min"]
+        max_val = contract["max"]
+
+        if not raw_df[feature_name].between(min_val, max_val).all():
+            raise ValueError(
+                f"Feature '{feature_name}' out of range. "
+                f"Expected between {min_val} and {max_val}."
+            )
+
+    
+    # 4. Apply business rules
+    
+    valid_rows = []
     for _, row in raw_df.iterrows():
-        # Convert row to dict
-        features = row.to_dict()
+        result = check_business_rules(row.to_dict())
+        if result["allowed"]:
+            valid_rows.append(row)
 
-        # 3a. Validate features
-        validated_features = validate_input(features)
+    if not valid_rows:
+        raise ValueError(
+            "No valid rows found after applying business rules."
+        )
 
-        # 3b. Preprocess input (scales values to 0-1)
-        X_row = preprocess_input(validated_features)
-        X.append(X_row)
+    valid_df = pd.DataFrame(valid_rows)
 
-        # 3c. Label student using predicted GPA
-        # Here we assume 'previous_semester_gpa_scaled' as the predicted GPA scaled
-        predicted_gpa = validated_features['previous_semester_gpa_scaled'] / 20  # Convert 0-100 to 0-5 scale
-        labeled = label_student(validated_features, predicted_gpa)
-        y.append(labeled['gpa_class_index'])  # You can also store class_name if desired
+    
+    # 5. Convert GPA to class label
 
-    # 4. Split into training and validation sets
+    valid_df[TARGET_COLUMN] = valid_df[
+        "previous_semester_gpa_scaled"
+    ].apply(_gpa_to_class_label)
+
+    
+    # 6. Split features and target
+    
+    X = valid_df.drop(
+        columns=["previous_semester_gpa_scaled", TARGET_COLUMN]
+    )
+    y = valid_df[TARGET_COLUMN]
+
+    
+    # 7. Train / validation split
+
     X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, shuffle=True
+        X,
+        y,
+        test_size=0.4,
+        random_state=42,
+        stratify=y,
     )
 
     return X_train, X_val, y_train, y_val
-
