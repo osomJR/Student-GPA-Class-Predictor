@@ -39,7 +39,7 @@ def _gpa_to_class_label(gpa_scaled: float) -> int:
 
 def build_dataset(
     raw_df: pd.DataFrame,
-) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series]:
     """
     Build training dataset from raw DataFrame.
 
@@ -47,7 +47,7 @@ def build_dataset(
         raw_df (pd.DataFrame): Raw dataset containing input features and target column.
 
     Returns:
-        X_train, X_val, y_train, y_val
+        X_train, X_val, X_test, y_train, y_val, y_test
     """
 
     # Work on a copy to avoid side effects
@@ -113,14 +113,22 @@ def build_dataset(
     y = valid_df[TARGET_COLUMN]
 
     
-    # 7. Train / validation split
+    # 7. Train / validation / test split (60/20/20)
 
-    X_train, X_val, y_train, y_val = train_test_split(
+    X_train, X_temp, y_train, y_temp = train_test_split(
         X,
         y,
-        test_size=0.4,
+        test_size=0.4,   # 40% -> validation + test
         random_state=42,
         stratify=y,
     )
 
-    return X_train, X_val, y_train, y_val
+    X_val, X_test, y_val, y_test = train_test_split(
+        X_temp,
+        y_temp,
+        test_size=0.5,   # split 40% into 20% val and 20% test
+        random_state=42,
+        stratify=y_temp,
+    )
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
