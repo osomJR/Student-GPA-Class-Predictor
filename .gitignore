@@ -10,5 +10,7 @@ data/raw/
 #OS junk
 .DS_Store
 Thumb.db
-#Models
-models/
+#Development
+development/evaluate.py
+development/train.py
+development/tune.py

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Student GPA Class Predictor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Student GPA Class Predictor</h1>
+
+      <form id="predict-form">
+        <label>average_attendance_per_course (%)</label>
+        <input type="number" id="attendance" min="0" max="100" required />
+
+        <label>average_assignments_submission_per_course (%)</label>
+        <input type="number" id="assignments" min="0" max="100" required />
+
+        <label>average_test_scores_per_course (%)</label>
+        <input type="number" id="tests" min="0" max="100" required />
+
+        <label>average_class_activities_and_engagements_per_course (%)</label>
+        <input type="number" id="engagements" min="0" max="100" required />
+
+        <button type="submit">Predict GPA Class</button>
+      </form>
+
+      <div id="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
