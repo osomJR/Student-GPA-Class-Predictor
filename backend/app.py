@@ -7,10 +7,12 @@ import os
 from src.schema import FEATURE_ORDER
 from src.business_rules import check_business_rules
 
-app = Flask(__name__, static_folder="frontend", static_url_path="")
-CORS(app)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "gpa_class_xgb_tuned.pkl")
 
-MODEL_PATH = "models/gpa_class_xgb_tuned.pkl"
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
+CORS(app)
 
 model = joblib.load(MODEL_PATH)
 
@@ -26,7 +28,6 @@ def serve_frontend():
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok"}), 200
-
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -45,8 +46,6 @@ def predict():
     if data is None:
         return jsonify({"error": "Invalid or missing JSON payload"}), 400
 
-    print("Received data:", data)
-
     # Ensure all required inference features are present
     missing_features = [f for f in INFERENCE_FEATURES if f not in data]
     if missing_features:
@@ -55,7 +54,6 @@ def predict():
             "missing_features": missing_features
         }), 400
 
-    # Convert to DataFrame (ONLY 4 FEATURES, SAME ORDER AS TRAINING)
     try:
         user_df = pd.DataFrame(
             [[data[f] for f in INFERENCE_FEATURES]],
@@ -63,7 +61,7 @@ def predict():
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-    # Business rules validation (still applied)
+
     rules_result = check_business_rules(user_df.iloc[0].to_dict())
     if not rules_result["allowed"]:
         return jsonify({
@@ -71,13 +69,11 @@ def predict():
             "reasons": rules_result["reasons"]
         }), 400
 
-    # Predict
     prediction = model.predict(user_df)[0]
 
     return jsonify({
         "prediction": int(prediction)
     }), 200
-
 
 if __name__ == "__main__":
     app.run(debug=True)
