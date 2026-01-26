@@ -1,7 +1,7 @@
 import os
 import joblib
 
-from src.models.tune import tune_model
+from development.tune import tune_model
 
 MODEL_PATH = "models/gpa_class_xgb_tuned.pkl"
 

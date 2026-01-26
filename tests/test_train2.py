@@ -1,11 +1,11 @@
 def test_model_produces_predictions(tmp_path, monkeypatch):
-    from src.models.train import train_model
+    from development.train import train_model
     import joblib
     import pandas as pd
 
     model_path = tmp_path / "model.pkl"
     monkeypatch.setattr(
-        "src.models.train.MODEL_OUTPUT_PATH",
+        "development.train.MODEL_OUTPUT_PATH",
         str(model_path)
     )
 

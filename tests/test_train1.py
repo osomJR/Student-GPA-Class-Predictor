@@ -1,7 +1,7 @@
 import os
 import joblib
 
-from src.models.train import train_model
+from development.train import train_model
 
 
 def test_train_model_creates_model_file(tmp_path, monkeypatch):
@@ -14,7 +14,7 @@ def test_train_model_creates_model_file(tmp_path, monkeypatch):
     model_path = tmp_path / "model.pkl"
 
     monkeypatch.setattr(
-        "src.models.train.MODEL_OUTPUT_PATH",
+        "development.train.MODEL_OUTPUT_PATH",
         str(model_path)
     )
 
