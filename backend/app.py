@@ -61,6 +61,6 @@ def predict():
     prediction = model.predict(user_df)[0]
 
     return jsonify({"prediction": int(prediction)}), 200
-
+# REMOVE THIS BLOCK FOR RENDER DEPLOYMENT
 if __name__ == "__main__":
     app.run(debug=True)
