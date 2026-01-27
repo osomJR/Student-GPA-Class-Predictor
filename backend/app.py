@@ -7,12 +7,12 @@ import os
 from src.schema import FEATURE_ORDER
 from src.business_rules import check_business_rules
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "gpa_class_xgb_tuned.pkl")
-
-app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
+app = Flask(__name__, static_folder="frontend", static_url_path="")
 CORS(app)
+
+# Absolute path to model (Render-safe)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "gpa_class_xgb_tuned.pkl")
 
 model = joblib.load(MODEL_PATH)
 
@@ -31,22 +31,11 @@ def health_check():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """
-    Expected JSON payload:
-    {
-        "average_attendance_per_course": 78,
-        "average_assignments_submission_per_course": 80,
-        "average_test_scores_per_course": 85,
-        "average_class_activities_and_engagements_per_course": 90
-    }
-    """
-
     data = request.get_json()
 
     if data is None:
         return jsonify({"error": "Invalid or missing JSON payload"}), 400
 
-    # Ensure all required inference features are present
     missing_features = [f for f in INFERENCE_FEATURES if f not in data]
     if missing_features:
         return jsonify({
@@ -71,9 +60,7 @@ def predict():
 
     prediction = model.predict(user_df)[0]
 
-    return jsonify({
-        "prediction": int(prediction)
-    }), 200
+    return jsonify({"prediction": int(prediction)}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
