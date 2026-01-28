@@ -7,7 +7,11 @@ import os
 from src.schema import FEATURE_ORDER
 from src.business_rules import check_business_rules
 
-app = Flask(__name__, static_folder="frontend", static_url_path="")
+app = Flask(
+    __name__,
+    static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend"),
+    static_url_path=""
+)
 CORS(app)
 
 # Absolute path to model (Render-safe)
