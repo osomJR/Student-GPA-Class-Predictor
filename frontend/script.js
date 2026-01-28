@@ -19,13 +19,19 @@ document
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1"
+          ? "http://127.0.0.1:5000/predict"
+          : "https://predict-mygpa.onrender.com/predict",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
       const result = await response.json();
 
