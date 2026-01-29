@@ -21,7 +21,7 @@ def test_build_dataset_smoke():
 
     input_rows = len(raw_df)
 
-    # Build dataset (NEW 6-value contract)
+    # Build dataset
     X_train, X_val, X_test, y_train, y_val, y_test = build_dataset(raw_df)
 
     # Basic sanity checks

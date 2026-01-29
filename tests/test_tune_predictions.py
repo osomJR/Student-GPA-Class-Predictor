@@ -4,10 +4,8 @@ import pandas as pd
 
 from src.dataset import build_dataset
 
-# ----------------------------
-# Configuration
-# ----------------------------
 
+# Configuration
 MODEL_PATH = "models/gpa_class_xgb_tuned.pkl"
 RAW_DATA_PATH = "data/raw/student_data.csv"
 

@@ -25,6 +25,13 @@ def assign_gpa_class(predicted_gpa: float) -> Tuple[int, str]:
     raise ValueError(f"GPA value {predicted_gpa} is out of bounds.")
 
 
+def decode_gpa_class(class_index: int) -> str:
+    """
+    Convert model class index into human-readable GPA class name.
+    """
+    return GPA_CLASS_BOUNDARY[class_index]["name"]
+
+
 def label_student(features: Dict[str, float], predicted_gpa: float) -> Dict[str, str]:
     """
     Creates a labeled output for a student.

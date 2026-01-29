@@ -23,12 +23,11 @@ def check_business_rules(features: Dict[str, float]) -> Dict[str, object]:
 
     warnings: List[str] = []
 
-    # -----------------------------
+    
     # Input validation
-    # -----------------------------
     for feature_name, contract in STRUCTURAL_CONTRACTS.items():
 
-        # 🔹 previous_semester_gpa_scaled is OPTIONAL
+        # previous_semester_gpa_scaled is OPTIONAL
         if feature_name == OPTIONAL_IGNORED_FEATURE:
             if feature_name not in features:
                 continue  # absence is allowed
@@ -56,9 +55,8 @@ def check_business_rules(features: Dict[str, float]) -> Dict[str, object]:
 
             continue  # do NOT enforce further rules on it
 
-        # -----------------------------
+        
         # Normal required features
-        # -----------------------------
         if feature_name not in features:
             return {
                 "allowed": False,
@@ -86,9 +84,8 @@ def check_business_rules(features: Dict[str, float]) -> Dict[str, object]:
                 "warnings": [],
             }
 
-    # -----------------------------
+    
     # Business rules (current semester only)
-    # -----------------------------
     attendance_ratio = features["average_attendance_per_course"] / 100.0
     assignments_submission_ratio = features["average_assignments_submission_per_course"] / 100.0
     test_scores_ratio = features["average_test_scores_per_course"] / 100.0

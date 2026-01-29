@@ -14,6 +14,7 @@ import pandas as pd
 
 from src.business_rules import check_business_rules
 from src.schema import FEATURE_ORDER, TARGET_COLUMN
+from src.labeling import decode_gpa_class
 
 MODEL_PATH = "models/gpa_class_xgb_tuned.pkl"
 
@@ -68,8 +69,10 @@ def predict():
         return
 
     # Predict
-    prediction = model.predict(user_df)[0]
-    print(f"\nPredicted GPA Class: {prediction}")
+    prediction_index = int(model.predict(user_df)[0])
+    prediction_label = decode_gpa_class(prediction_index)
+    print("predicted_GPA_class:", prediction_label)
+    print("class_index:", prediction_index)
 
 
 if __name__ == "__main__":

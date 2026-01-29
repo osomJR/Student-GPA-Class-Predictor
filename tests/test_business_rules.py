@@ -2,9 +2,7 @@ import pytest
 from src.business_rules import check_business_rules
 
 
-# -----------------------------
 # Helpers
-# -----------------------------
 def valid_base_features():
     return {
         "average_attendance_per_course": 80.0,
@@ -14,9 +12,8 @@ def valid_base_features():
     }
 
 
-# -----------------------------
+
 # OPTIONAL FEATURE TESTS
-# -----------------------------
 def test_allows_prediction_without_previous_semester_gpa():
     features = valid_base_features()
 
@@ -60,9 +57,8 @@ def test_blocks_if_previous_semester_gpa_out_of_range():
     assert result["warnings"] == []
 
 
-# -----------------------------
+
 # REQUIRED FEATURE VALIDATION
-# -----------------------------
 def test_blocks_missing_required_feature():
     features = valid_base_features()
     del features["average_attendance_per_course"]
@@ -96,9 +92,8 @@ def test_blocks_out_of_range_required_feature():
     assert result["warnings"] == []
 
 
-# -----------------------------
+
 # BUSINESS RULES
-# -----------------------------
 def test_blocks_low_attendance():
     features = valid_base_features()
     features["average_attendance_per_course"] = 40.0  # below 50%
