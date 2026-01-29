@@ -6,6 +6,7 @@ import os
 
 from src.schema import FEATURE_ORDER
 from src.business_rules import check_business_rules
+from src.labeling import decode_gpa_class
 
 app = Flask(
     __name__,
@@ -62,9 +63,12 @@ def predict():
             "reasons": rules_result["reasons"]
         }), 400
 
-    prediction = model.predict(user_df)[0]
+    prediction_index = int(model.predict(user_df)[0])
+    prediction_label = decode_gpa_class(prediction_index)
 
-    return jsonify({"prediction": int(prediction)}), 200
+
+    return jsonify({"class_index": prediction_index, 
+                    "prediction": prediction_label}), 200
 # REMOVE THIS BLOCK FOR RENDER DEPLOYMENT
 if __name__ == "__main__":
     app.run(debug=True)
