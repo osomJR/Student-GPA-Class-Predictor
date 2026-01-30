@@ -8,24 +8,30 @@
   <body>
     <div class="container">
       <h1>Student GPA Class Predictor</h1>
+      <p class="subtitle">Get insights into your academic performance</p>
 
       <form id="predict-form">
-        <label>average_attendance_per_course (%)</label>
+        <label>Average Attendance (%)</label>
         <input type="number" id="attendance" min="0" max="100" required />
 
-        <label>average_assignments_submission_per_course (%)</label>
+        <label>Assignment Submission (%)</label>
         <input type="number" id="assignments" min="0" max="100" required />
 
-        <label>average_test_scores_per_course (%)</label>
+        <label>Test Scores (%)</label>
         <input type="number" id="tests" min="0" max="100" required />
 
-        <label>average_class_activities_and_engagements_per_course (%)</label>
+        <label>Class Engagement (%)</label>
         <input type="number" id="engagements" min="0" max="100" required />
 
         <button type="submit">Predict GPA Class</button>
       </form>
 
-      <div id="result"></div>
+      <div id="loading" class="hidden">Analyzing performance...</div>
+
+      <div id="result" class="result-card hidden">
+        <h2 id="prediction-text"></h2>
+        <p id="feedback-text"></p>
+      </div>
     </div>
 
     <script src="script.js"></script>

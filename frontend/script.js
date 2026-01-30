@@ -3,6 +3,9 @@ document
   .addEventListener("submit", async function (e) {
     e.preventDefault();
 
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerText = "Analyzing your academic performance...";
+
     const payload = {
       average_attendance_per_course: Number(
         document.getElementById("attendance").value,
@@ -36,17 +39,18 @@ document
       const result = await response.json();
 
       if (!response.ok) {
-        document.getElementById("result").innerText =
-          "Error: " + (result.error || "Validation failed");
+        resultDiv.innerText =
+          " Error: " + (result.error || "Validation failed");
         return;
       }
 
-      document.getElementById("result").innerText =
-        "Predicted GPA Class: " +
+      resultDiv.innerText =
+        "🎓 Predicted GPA Class:\n" +
         result.prediction +
-        "\n\nFeedback: " +
+        "\n\n📌 Personalized Feedback:\n" +
         result.feedback;
     } catch (error) {
-      document.getElementById("result").innerText = "Network or server error";
+      resultDiv.innerText =
+        "⚠️ Network or server error. Please try again later.";
     }
   });
