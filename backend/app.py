@@ -7,6 +7,7 @@ import os
 from src.schema import FEATURE_ORDER
 from src.business_rules import check_business_rules
 from src.labeling import decode_gpa_class
+from src.feedback import generate_feedback
 
 app = Flask(
     __name__,
@@ -56,19 +57,28 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-    rules_result = check_business_rules(user_df.iloc[0].to_dict())
+    features_dict = user_df.iloc[0].to_dict()
+
+    rules_result = check_business_rules(features_dict)
     if not rules_result["allowed"]:
         return jsonify({
             "error": "Business rule violation",
-            "reasons": rules_result["reasons"]
+            "reason": rules_result["reason"],
+            "warnings": rules_result["warnings"]
         }), 400
 
     prediction_index = int(model.predict(user_df)[0])
     prediction_label = decode_gpa_class(prediction_index)
 
+    feedback = generate_feedback(prediction_label, features_dict)
 
-    return jsonify({"class_index": prediction_index, 
-                    "prediction": prediction_label}), 200
+    return jsonify({
+        "class_index": prediction_index,
+        "prediction": prediction_label,
+        "feedback": feedback
+    }), 200
+
+
 # REMOVE THIS BLOCK FOR RENDER DEPLOYMENT
 if __name__ == "__main__":
     app.run(debug=True)
