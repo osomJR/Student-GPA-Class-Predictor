@@ -42,7 +42,10 @@ document
       }
 
       document.getElementById("result").innerText =
-        "Predicted GPA Class: " + result.prediction;
+        "Predicted GPA Class: " +
+        result.prediction +
+        "\n\nFeedback: " +
+        result.feedback;
     } catch (error) {
       document.getElementById("result").innerText = "Network or server error";
     }
