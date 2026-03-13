@@ -1,18 +1,20 @@
 # Virtual environment
 .venv/
-# python cache
+# Python cache
 _ _pycache_ _/
 *.pyc
 # Environmental variables
 .env
 # Data
-data/raw/
+data/
 # OS junk
 .DS_Store
 Thumb.db
 # Development
-development/evaluate.py
-development/train.py
-development/tune.py
+development/
 # pytest
 .pytest_cache
+# tests
+tests/
+# models
+models
